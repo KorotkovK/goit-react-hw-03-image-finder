@@ -6,7 +6,7 @@ import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
-import Styles from '/IT/goit-react-hw-03-image-finder/src/components/styles.css';
+
 
 
 
