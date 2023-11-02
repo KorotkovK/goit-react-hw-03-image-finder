@@ -18,10 +18,11 @@ class App extends Component {
   };
 
   handleSearch = (query) => {
-    this.setState({ query, images: [], page: 1 }, () => this.fetchImages(query, 1));
+    this.setState({ query, images: [], page: 1 }, this.fetchImages);
   };
 
-  fetchImages = (query, page) => {
+  fetchImages = () => {
+    const { query, page } = this.state;
     this.setState({ isLoading: true });
 
     const apiKey = '39292315-4a49a35cd99dea9ef99c54ebb';
@@ -44,7 +45,7 @@ class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.fetchImages(this.state.query, this.state.page + 1);
+    this.fetchImages();
   };
 
   handleOpenModal = (image) => {
