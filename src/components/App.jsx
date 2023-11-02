@@ -7,10 +7,6 @@ import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
 
-
-
-
-
 class App extends Component {
   state = {
     query: '',
@@ -29,7 +25,6 @@ class App extends Component {
     const { query, page } = this.state;
     this.setState({ isLoading: true });
 
-    
     const apiKey = '39292315-4a49a35cd99dea9ef99c54ebb';
 
     axios
@@ -79,7 +74,9 @@ class App extends Component {
         </ImageGallery>
         {isLoading && <Loader type="Puff" color="#00BFFF" height={100} width={100} />}
         {images.length > 0 && !isLoading && <Button onClick={this.handleLoadMore} />}
-        {showModal && <Modal src={selectedImage} alt="Selected Image" onClose={this.handleCloseModal} />}
+        {showModal && (
+          <Modal src={selectedImage} alt="Selected Image" onClose={this.handleCloseModal} />
+        )}
       </div>
     );
   }
