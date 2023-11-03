@@ -2,12 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Modal = ({ src, alt, onClose }) => {
-  const handleKeyDown = (e) => {
-    if (e.code === 'Escape') {
-      onClose();
-    }
-  };
-
   return (
     <div className="Overlay" onClick={onClose}>
       <div className="Modal">
@@ -24,4 +18,3 @@ Modal.propTypes = {
 };
 
 export default Modal;
-
