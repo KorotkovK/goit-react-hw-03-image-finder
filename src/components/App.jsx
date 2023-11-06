@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
@@ -15,10 +14,19 @@ class App extends Component {
     isLoading: false,
     showModal: false,
     selectedImage: '',
+    showLoadMore: false,
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.query !== this.state.query) {
+      this.setState({ images: [], page: 1, showLoadMore: false }, () => {
+        this.fetchImages();
+      });
+    }
+  }
+
   handleSearch = (query) => {
-    this.setState({ query, images: [], page: 1 }, this.fetchImages);
+    this.setState({ query });
   };
 
   fetchImages = () => {
@@ -32,11 +40,16 @@ class App extends Component {
         `https://pixabay.com/api/?q=${query}&page=${page}&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=12`
       )
       .then((response) => {
-        this.setState((prevState) => ({
-          images: [...prevState.images, ...response.data.hits],
-          page: prevState.page + 1,
-          isLoading: false,
-        }));
+        if (response.data.hits.length > 0) {
+          this.setState((prevState) => ({
+            images: [...prevState.images, ...response.data.hits],
+            page: prevState.page + 1,
+            isLoading: false,
+            showLoadMore: true,
+          }));
+        } else {
+          this.setState({ isLoading: false, showLoadMore: false });
+        }
       })
       .catch((error) => {
         console.error('Error fetching images:', error);
@@ -57,23 +70,14 @@ class App extends Component {
   };
 
   render() {
-    const { images, isLoading, showModal, selectedImage } = this.state;
+    const { images, isLoading, showModal, selectedImage, showLoadMore } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSearch} />
-        <ImageGallery>
-          {images.map((image) => (
-            <ImageGalleryItem
-              key={image.id}
-              src={image.webformatURL}
-              alt={image.tags}
-              onClick={() => this.handleOpenModal(image.largeImageURL)}
-            />
-          ))}
-        </ImageGallery>
+        <ImageGallery images={images} onImageClick={this.handleOpenModal} />
         {isLoading && <Loader type="Puff" color="#00BFFF" height={100} width={100} />}
-        {images.length > 0 && !isLoading && <Button onClick={this.handleLoadMore} />}
+        {showLoadMore && images.length > 0 && !isLoading && <Button onClick={this.handleLoadMore} />}
         {showModal && (
           <Modal src={selectedImage} alt="Selected Image" onClose={this.handleCloseModal} />
         )}
