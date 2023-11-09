@@ -18,15 +18,13 @@ class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.setState({ images: [], page: 1, showLoadMore: false }, () => {
-        this.fetchImages();
-      });
+    if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+        this.fetchImages(); 
     }
   }
 
   handleSearch = (query) => {
-    this.setState({ query });
+    this.setState({ query, images: [], page: 1, showLoadMore: false });
   };
 
   fetchImages = () => {
@@ -43,7 +41,7 @@ class App extends Component {
         if (response.data.hits.length > 0) {
           this.setState((prevState) => ({
             images: [...prevState.images, ...response.data.hits],
-            page: prevState.page + 1,
+            // page: prevState.page + 1,
             isLoading: false,
             showLoadMore: true,
           }));
@@ -58,7 +56,9 @@ class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.fetchImages();
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
   };
 
   handleOpenModal = (image) => {
